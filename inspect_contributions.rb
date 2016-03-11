@@ -2,17 +2,84 @@
 
 require 'date'
 require 'git'
+require 'git_diff_parser'
 require 'logger'
 require 'optparse'
 require 'pp'
 require 'time'
 
 
+##### CONFIGURATION #####
+
 @json_file = '../data/commits.js'
 
 # Configure logger.
 logger = Logger.new(STDOUT)
 logger.level = Logger::WARN
+
+
+##### FUNCTIONS #####
+
+def determine_language(filename:, sha:, git_repo:)
+  return nil if filename == 'LICENSE'
+
+  # First try to match on known extensions.
+  case filename
+  when /\.(pl|pm|t|cgi|pod|run)$/i
+    return 'Perl'
+  when /\.rb$/
+    return 'Ruby'
+  when /\.md$/
+    return 'Markdown'
+  when /\.json$/
+    return 'JSON'
+  when /\.(yml|yaml)$/
+    return 'YAML'
+  when /\.?(perlcriticrc|githooksrc|ini|editorconfig|gitconfig)$/
+    return 'INI'
+  when /\.css$/
+    return 'CSS'
+  when /\.(tt2|html)$/
+    return 'HTML'
+  when /\.sql$/
+    return 'SQL'
+  when /\.py$/
+    return 'Python'
+  when /\.js$/
+    return 'JavaScript'
+  when /\.c$/
+    return 'C'
+  when /\.sh$/
+    return 'bash'
+  when /(bash|bash_\w+)$/
+    return 'bash'
+  when /\.?(SKIP|gitignore|txt|csv|vim|gitmodules|gitattributes|jshintrc|gperf|vimrc|psqlrc|inputrc|screenrc)$/
+    return 'Text'
+  when /^(README|MANIFEST|Changes)$/
+    return 'Text'
+  end
+
+  # Next, retrieve the file content and infer from that.
+  begin
+    content = git_repo.show(sha, filename)
+  rescue
+    pp "#{$!}"
+  end
+  return nil if content == nil || content == ''
+
+  first_line = content.split(/\n/)[0] || ''
+  case first_line
+  when /perl$/
+    return 'Perl'
+  end
+
+  extension = /\.([^\.]+)$/.match(filename)
+  return filename if extension.nil?
+  return extension[0]
+end
+
+
+##### MAIN #####
 
 # Parse command line options.
 options = {}
@@ -61,6 +128,7 @@ puts ""
 monthly_commits = {}
 monthly_commits.default = 0
 total_commits = 0
+lines_by_language = {}
 repos.sort.each do |repo|
   puts "Inspecting repo " + repo
   git_repo = Git.open(repo, :log => logger)
@@ -71,6 +139,32 @@ repos.sort.each do |repo|
     # Only include the authors specified on the command line.
     next if !options[:authors].include?(commit.author.email)
 
+    # Parse diff and analyze patches to detect language.
+    diff = commit.diff_parent.to_s
+    diff.encode!('UTF-8', 'binary', invalid: :replace, undef: :replace, replace: '')
+
+    patches = GitDiffParser.parse(diff)
+    patches.each do |patch|
+      body = patch.instance_variable_get :@body
+      language = determine_language(filename: patch.file, sha: commit.sha, git_repo: git_repo)
+      next if language == nil
+      lines_by_language[language] ||=
+      {
+        'added'   => 0,
+        'deleted' => 0
+      }
+
+      body.split(/\n/).each do |content|
+        if (/^[+-]/.match(content) && !/^[+-]\s+$/.match(content))
+          if (/^\+/.match(content))
+            lines_by_language[language]['added'] += 1
+          elsif (/^\-/.match(content))
+            lines_by_language[language]['deleted'] += 1
+          end
+        end
+      end
+    end
+
     # Add to stats for monthly commit count.
     # Note: months are zero-padded to allow easy sorting, even if it's more
     # work for formatting later on.
@@ -79,8 +173,10 @@ repos.sort.each do |repo|
     # Add to stats for total commits count.
     total_commits += 1
   end
+  #break
 end
 puts ""
+pp lines_by_language
 
 # Display sanity check.
 puts "Found #{total_commits} commits for author(s) " + options[:authors].join(', ')
