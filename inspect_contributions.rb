@@ -50,17 +50,13 @@ puts "Found #{git_parser.total_commits} commits for author(s) " + options[:autho
 puts ""
 exit if git_parser.monthly_commits.keys.length == 0
 
-# Display statistics.
-puts "===== Statistics ====="
+# Regenerate monthly commits.
+puts "===== Monthly commits ====="
 puts ""
 git_parser.get_month_scale.each do |frame|
   key = sprintf('%s-%02d', frame[0], frame[1])
   puts key + ": " + git_parser.monthly_commits[key].to_s
 end
-puts ""
-
-# Generate JSON for monthly commits.
-puts "===== JSON output ====="
 puts ""
 monthly_commits_json = git_parser.get_monthly_commits_json
 File.open(@json_file, 'w') { |file| file.write(monthly_commits_json) }
