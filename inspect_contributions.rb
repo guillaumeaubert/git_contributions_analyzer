@@ -24,64 +24,6 @@ logger.level = Logger::WARN
 
 ##### FUNCTIONS #####
 
-def determine_language(filename:, sha:, git_repo:)
-  return nil if filename == 'LICENSE'
-
-  # First try to match on known extensions.
-  case filename
-  when /\.(pl|pm|t|cgi|pod|run)$/i
-    return 'Perl'
-  when /\.rb$/
-    return 'Ruby'
-  when /\.md$/
-    return 'Markdown'
-  when /\.json$/
-    return 'JSON'
-  when /\.(yml|yaml)$/
-    return 'YAML'
-  when /\.?(perlcriticrc|githooksrc|ini|editorconfig|gitconfig)$/
-    return 'INI'
-  when /\.css$/
-    return 'CSS'
-  when /\.(tt2|html)$/
-    return 'HTML'
-  when /\.sql$/
-    return 'SQL'
-  when /\.py$/
-    return 'Python'
-  when /\.js$/
-    return 'JavaScript'
-  when /\.c$/
-    return 'C'
-  when /\.sh$/
-    return 'bash'
-  when /(bash|bash_\w+)$/
-    return 'bash'
-  when /\.?(SKIP|gitignore|txt|csv|vim|gitmodules|gitattributes|jshintrc|gperf|vimrc|psqlrc|inputrc|screenrc)$/
-    return 'Text'
-  when /^(README|MANIFEST|Changes)$/
-    return 'Text'
-  end
-
-  # Next, retrieve the file content and infer from that.
-  begin
-    content = git_repo.show(sha, filename)
-  rescue
-    pp "#{$!}"
-  end
-  return nil if content == nil || content == ''
-
-  first_line = content.split(/\n/)[0] || ''
-  case first_line
-  when /perl$/
-    return 'Perl'
-  end
-
-  extension = /\.([^\.]+)$/.match(filename)
-  return filename if extension.nil?
-  return extension[0]
-end
-
 def parse_command_line_options()
   options = {}
   OptionParser.new do |opts|
