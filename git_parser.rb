@@ -5,7 +5,15 @@
 #   git_parser = GitParser.new(logger: logger, author: author)
 #
 class GitParser
-  attr_reader :monthly_commits, :total_commits, :lines_by_language
+  # Public: Returns a hash of commit numbers broken down by month.
+  attr_reader :monthly_commits
+
+  # Public: Returns the total number of commits belonging to the author
+  # specified.
+  attr_reader :total_commits
+
+  # Public: Returns the number of lines added/removed broken down by language.
+  attr_reader :lines_by_language
 
   # Public: Initialize new GitParser object.
   #
