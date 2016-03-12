@@ -5,7 +5,7 @@
 #   git_parser = GitParser.new(logger: logger, author: author)
 #
 class GitParser
-  attr_accessor :monthly_commits, :total_commits, :lines_by_language
+  attr_reader :monthly_commits, :total_commits, :lines_by_language
 
   # Public: Initialize new GitParser object.
   #
