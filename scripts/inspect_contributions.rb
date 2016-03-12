@@ -16,7 +16,7 @@ require_relative '../lib/utils'
 
 ##### CONFIGURATION #####
 
-@json_file = '../data/commits.js'
+@json_file = 'commits.js'
 
 # Configure logger.
 logger = Logger.new(STDOUT)
@@ -59,6 +59,6 @@ git_parser.get_month_scale.each do |frame|
 end
 puts ""
 monthly_commits_json = git_parser.get_monthly_commits_json
-File.open(@json_file, 'w') { |file| file.write(monthly_commits_json) }
+File.open(File.join(options[:output], @json_file), 'w') { |file| file.write(monthly_commits_json) }
 puts "Re-generated #{@json_file}."
 puts ""

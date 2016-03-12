@@ -15,6 +15,11 @@ class Utils
         options[:authors] << email
       end
 
+      # Parse output directory.
+      opts.on("-p", "--output PATH", "Specify a path to output files with collected data") do |output|
+        options[:output] = output
+      end
+
       # Show usage
       opts.on_tail("-h", "--help", "Show this message") do
         puts opts
@@ -24,6 +29,7 @@ class Utils
 
     # Check mandatory options.
     raise OptionParser::MissingArgument, '--author' if options[:authors].length == 0
+    raise OptionParser::MissingArgument, '--output' if options[:output].nil?
     raise OptionParser::MissingArgument, '--path' if options[:path].nil?
 
     return options
