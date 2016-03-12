@@ -1,6 +1,17 @@
+# Public: parse git logs for language and commit metadata.
+#
+# Examples:
+#
+#   git_parser = GitParser.new(logger: logger, author: author)
+#
 class GitParser
   attr_accessor :monthly_commits, :total_commits, :lines_by_language
 
+  # Public: Initialize new GitParser object.
+  #
+  # logger - A logger object to display git errors/warnings.
+  # author - The email of the git author for whom we should compile the metadata.
+  #
   def initialize(logger:, author:)
     @logger = logger
     @author = author
@@ -10,6 +21,14 @@ class GitParser
     @lines_by_language = {}
   end
 
+  # Public: Determine the type of a file at the given revision of a repo.
+  #
+  # filename - The name of the file to analyze.
+  # sha      - The commit ID.
+  # git_repo - A git repo object corresponding to the underlying repo.
+  #
+  # Returns a string corresponding to the language of the file.
+  #
   def self.determine_language(filename:, sha:, git_repo:)
     return nil if filename == 'LICENSE'
 
@@ -63,11 +82,19 @@ class GitParser
       return 'Perl'
     end
 
+    # Fall back on the extension in last resort.
     extension = /\.([^\.]+)$/.match(filename)
     return filename if extension.nil?
     return extension[0]
   end
 
+  # Public: Parse the git logs for a repo.
+  #
+  # repo - A git repo object corresponding to the underlying repo.
+  #
+  # This method adds the metadata extracted for this repo to the instance
+  # variables collecting commit metadata.
+  #
   def parse_repo(repo:)
     git_repo = Git.open(repo, :log => @logger)
 
@@ -113,7 +140,10 @@ class GitParser
     end
   end
 
-  # Get a full list of indexes, including months without commits.
+  # Public: Get a range of months from the earliest commit to the latest.
+  #
+  # Returns an array of "YYYY-MM" strings.
+  #
   def get_month_scale()
     month_scale = []
     commits_start = @monthly_commits.keys.sort.first.split('-').map { |x| x.to_i }
@@ -129,6 +159,10 @@ class GitParser
     return month_scale
   end
 
+  # Public: Generate a JSON representation of commits totals by month.
+  #
+  # Returns: a JSON string.
+  #
   def get_monthly_commits_json()
     json = []
     json << 'var commits ='
