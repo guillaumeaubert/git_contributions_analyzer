@@ -10,8 +10,8 @@ require 'pp'
 require 'time'
 
 # Internal classes.
-require_relative 'git_parser'
-require_relative 'utils'
+require_relative '../lib/git_parser'
+require_relative '../lib/utils'
 
 
 ##### CONFIGURATION #####
