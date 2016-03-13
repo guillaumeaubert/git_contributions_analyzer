@@ -36,7 +36,6 @@ repos.sort.each do |repo|
   #break
 end
 puts ""
-pp git_parser.lines_by_language
 
 # Display sanity check.
 puts "Found #{git_parser.total_commits} commits for author(s) " + options[:authors].join(', ')

@@ -188,8 +188,9 @@ class GitParser
 
     return JSON.pretty_generate(
       {
-        :monthly_commits => formatted_monthly_commits,
-        :total_commits   => @total_commits,
+        :monthly_commits   => formatted_monthly_commits,
+        :total_commits     => @total_commits,
+        :lines_by_language => @lines_by_language,
       }
     )
   end
