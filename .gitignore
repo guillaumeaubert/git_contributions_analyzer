@@ -1,2 +1,5 @@
 # Don't add built gems.
 /*.gem
+
+# Don't version local install info.
+/Gemfile.lock
