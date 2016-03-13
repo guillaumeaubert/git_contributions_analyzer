@@ -10,8 +10,8 @@ Gem::Specification.new do |s|
   s.license     = 'GPLv3'
 
   s.files       = [
-    'lib/git_parser.rb',
-    'lib/utils.rb',
+    'lib/git-commits-analyzer.rb',
+    'lib/git-commits-analyzer/utils.rb'
   ]
   s.executables << 'analyze_commits'
 end

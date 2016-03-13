@@ -5,8 +5,8 @@ require 'logger'
 require 'pp'
 
 # Internal classes.
-require 'git_parser'
-require 'utils'
+require 'git-commits-analyzer'
+require 'git-commits-analyzer/utils'
 
 
 ##### CONFIGURATION #####
@@ -29,23 +29,23 @@ puts ""
 # Inspect git repos.
 puts "===== Inspecting repos ====="
 puts ""
-git_parser = GitParser.new(logger: logger, author: options[:authors])
+git_commits_analyzer = GitCommitsAnalyzer.new(logger: logger, author: options[:authors])
 repos.sort.each do |repo|
   puts "Inspecting repo " + repo
-  git_parser.parse_repo(repo: repo)
+  git_commits_analyzer.parse_repo(repo: repo)
   #break
 end
 puts ""
 
 # Display sanity check.
-puts "Found #{git_parser.total_commits} commits for author(s) " + options[:authors].join(', ')
+puts "Found #{git_commits_analyzer.total_commits} commits for author(s) " + options[:authors].join(', ')
 puts ""
-exit if git_parser.monthly_commits.keys.length == 0
+exit if git_commits_analyzer.monthly_commits.keys.length == 0
 
 # Save data.
 puts "===== Save data ====="
 puts ""
 output_file = options[:output];
-File.open(output_file, 'w') { |file| file.write(git_parser.to_json) }
+File.open(output_file, 'w') { |file| file.write(git_commits_analyzer.to_json) }
 puts "Re-generated #{output_file}."
 puts ""

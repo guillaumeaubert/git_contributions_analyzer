@@ -7,9 +7,9 @@ require 'json'
 #
 # Examples:
 #
-#   git_parser = GitParser.new(logger: logger, author: author)
+#   git_parser = GitCommitsAnalyzer.new(logger: logger, author: author)
 #
-class GitParser
+class GitCommitsAnalyzer
   # Public: Returns a hash of commit numbers broken down by month.
   attr_reader :monthly_commits
 
