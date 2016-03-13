@@ -1,3 +1,5 @@
+require 'optparse'
+
 class Utils
   def self.parse_command_line_options()
     options = {}

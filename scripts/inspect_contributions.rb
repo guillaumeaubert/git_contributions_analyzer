@@ -1,13 +1,8 @@
 #!/usr/bin/env ruby
 
 # Gems.
-require 'date'
-require 'git'
-require 'git_diff_parser'
 require 'logger'
-require 'optparse'
 require 'pp'
-require 'time'
 
 # Internal classes.
 require_relative '../lib/git_parser'

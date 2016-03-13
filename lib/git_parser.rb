@@ -1,3 +1,6 @@
+require 'date'
+require 'git'
+require 'git_diff_parser'
 require 'json'
 
 # Public: parse git logs for language and commit metadata.
