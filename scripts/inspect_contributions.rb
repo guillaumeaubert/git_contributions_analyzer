@@ -11,8 +11,6 @@ require_relative '../lib/utils'
 
 ##### CONFIGURATION #####
 
-@json_file = 'monthly_commits.json'
-
 # Configure logger.
 logger = Logger.new(STDOUT)
 logger.level = Logger::WARN
@@ -45,15 +43,10 @@ puts "Found #{git_parser.total_commits} commits for author(s) " + options[:autho
 puts ""
 exit if git_parser.monthly_commits.keys.length == 0
 
-# Regenerate monthly commits.
-puts "===== Monthly commits ====="
+# Save data.
+puts "===== Save data ====="
 puts ""
-git_parser.get_month_scale.each do |frame|
-  key = sprintf('%s-%02d', frame[0], frame[1])
-  puts key + ": " + git_parser.monthly_commits[key].to_s
-end
-puts ""
-monthly_commits_json = git_parser.get_monthly_commits_json
-File.open(File.join(options[:output], @json_file), 'w') { |file| file.write(monthly_commits_json) }
-puts "Re-generated #{@json_file}."
+output_file = options[:output];
+File.open(output_file, 'w') { |file| file.write(git_parser.to_json) }
+puts "Re-generated #{output_file}."
 puts ""

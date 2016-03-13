@@ -172,23 +172,23 @@ class GitParser
     return month_scale
   end
 
-  # Public: Generate a JSON representation of commits totals by month.
+  # Public: Generate a JSON representation of the parsed data.
   #
   # Returns: a JSON string.
   #
-  def get_monthly_commits_json()
-    data = []
+  def to_json()
+    formatted_monthly_commits = []
     month_names = Date::ABBR_MONTHNAMES
     self.get_month_scale.each do |frame|
       display_key = month_names[frame[1]] + '-' + frame[0].to_s
       data_key = sprintf('%s-%02d', frame[0], frame[1])
       count = @monthly_commits[data_key].to_s
-      data << { :month => display_key, :commits => count.to_s }
+      formatted_monthly_commits << { :month => display_key, :commits => count.to_s }
     end
 
     return JSON.pretty_generate(
       {
-        :monthly_commits => data,
+        :monthly_commits => formatted_monthly_commits,
         :total_commits   => @total_commits,
       }
     )
