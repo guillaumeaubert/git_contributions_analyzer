@@ -77,7 +77,7 @@ class GitParser
       return 'bash'
     when /\.?(SKIP|gitignore|txt|csv|vim|gitmodules|gitattributes|jshintrc|gperf|vimrc|psqlrc|inputrc|screenrc)$/
       return 'Text'
-    when /^(README|MANIFEST|Changes)$/
+    when /^(README|MANIFEST|Changes|Gemfile|Gemfile.lock)$/
       return 'Text'
     end
 
@@ -98,6 +98,7 @@ class GitParser
     # Fall back on the extension in last resort.
     extension = /\.([^\.]+)$/.match(filename)
     return filename if extension.nil?
+    return nil if extension[0] == 'lock'
     return extension[0]
   end
 
