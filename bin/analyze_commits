@@ -5,8 +5,8 @@ require 'logger'
 require 'pp'
 
 # Internal classes.
-require_relative '../lib/git_parser'
-require_relative '../lib/utils'
+require 'git_parser'
+require 'utils'
 
 
 ##### CONFIGURATION #####
