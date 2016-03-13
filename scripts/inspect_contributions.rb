@@ -16,7 +16,7 @@ require_relative '../lib/utils'
 
 ##### CONFIGURATION #####
 
-@json_file = 'commits.js'
+@json_file = 'monthly_commits.json'
 
 # Configure logger.
 logger = Logger.new(STDOUT)

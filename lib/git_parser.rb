@@ -1,3 +1,5 @@
+require 'json'
+
 # Public: parse git logs for language and commit metadata.
 #
 # Examples:
@@ -172,19 +174,20 @@ class GitParser
   # Returns: a JSON string.
   #
   def get_monthly_commits_json()
-    json = []
-    json << 'var commits ='
-    json << '['
-    json << "\t// Date       Commits"
+    data = []
     month_names = Date::ABBR_MONTHNAMES
     self.get_month_scale.each do |frame|
       display_key = month_names[frame[1]] + '-' + frame[0].to_s
       data_key = sprintf('%s-%02d', frame[0], frame[1])
       count = @monthly_commits[data_key].to_s
-      json << sprintf("\t[ \"%s\", %s ],", display_key, count.to_s.ljust(3))
+      data << { :month => display_key, :commits => count.to_s }
     end
-    json << '];'
 
-    return json.join("\n")
+    return JSON.pretty_generate(
+      {
+        :monthly_commits => data,
+        :total_commits   => @total_commits,
+      }
+    )
   end
 end
