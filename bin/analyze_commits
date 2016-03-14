@@ -23,29 +23,36 @@ options = Utils.parse_command_line_options()
 
 # Find git repos to inspect.
 repos = Utils.get_git_repos(path: options[:path])
-puts "Found " + repos.length.to_s + " repos to inspect."
-puts ""
+printf("Found %s repos to inspect.\n", repos.length.to_s)
+puts ''
 
 # Inspect git repos.
-puts "===== Inspecting repos ====="
-puts ""
-git_commits_analyzer = GitCommitsAnalyzer.new(logger: logger, author: options[:authors])
+puts '===== Inspecting repos ====='
+puts ''
+git_commits_analyzer = GitCommitsAnalyzer.new(
+  logger: logger,
+  author: options[:authors]
+)
 repos.sort.each do |repo|
-  puts "Inspecting repo " + repo
+  printf("Inspecting repo %s.\n", repo)
   git_commits_analyzer.parse_repo(repo: repo)
-  #break
+  # break
 end
-puts ""
+puts ''
 
 # Display sanity check.
-puts "Found #{git_commits_analyzer.total_commits} commits for author(s) " + options[:authors].join(', ')
-puts ""
-exit if git_commits_analyzer.monthly_commits.keys.length == 0
+printf(
+  "Found %s commits for author(s) %s.\n",
+  git_commits_analyzer.total_commits,
+  options[:authors].join(', ')
+)
+puts ''
+exit if git_commits_analyzer.monthly_commits.keys.empty?
 
 # Save data.
-puts "===== Save data ====="
-puts ""
-output_file = options[:output];
+puts '===== Save data ====='
+puts ''
+output_file = options[:output]
 File.open(output_file, 'w') { |file| file.write(git_commits_analyzer.to_json) }
 puts "Re-generated #{output_file}."
-puts ""
+puts ''

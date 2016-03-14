@@ -1,36 +1,44 @@
 require 'optparse'
 
+# Public: supporting functions for the command-line utility.
+#
+# Examples:
+#
+#   require 'git-commits-analyzer/utils'
+#   options = Utils.parse_command_line_options()
+#   repos = Utils.get_git_repos(path)
+#
 class Utils
   def self.parse_command_line_options()
     options = {}
     OptionParser.new do |opts|
-      opts.banner = "Usage: inspect_contributions.rb [options]"
+      opts.banner = 'Usage: inspect_contributions.rb [options]'
       options[:authors] = []
 
       # Parse path.
-      opts.on("-p", "--path PATH", "Specify a path to search for git repositories under") do |path|
+      opts.on('-p', '--path PATH', 'Specify a path to search for git repositories under') do |path|
         options[:path] = path
       end
 
       # Parse authors.
-      opts.on("-a", "--author EMAIL", "Include this author in statistics") do |email|
+      opts.on('-a', '--author EMAIL', 'Include this author in statistics') do |email|
         options[:authors] << email
       end
 
       # Parse output directory.
-      opts.on("-p", "--output PATH", "Specify a path to output files with collected data") do |output|
+      opts.on('-p', '--output PATH', 'Specify a path to output files with collected data') do |output|
         options[:output] = output
       end
 
       # Show usage
-      opts.on_tail("-h", "--help", "Show this message") do
+      opts.on_tail('-h', '--help', 'Show this message') do
         puts opts
         exit
       end
     end.parse!
 
     # Check mandatory options.
-    raise OptionParser::MissingArgument, '--author' if options[:authors].length == 0
+    raise OptionParser::MissingArgument, '--author' if options[:authors].empty?
     raise OptionParser::MissingArgument, '--output' if options[:output].nil?
     raise OptionParser::MissingArgument, '--path' if options[:path].nil?
 

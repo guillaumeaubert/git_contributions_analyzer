@@ -1,5 +1,7 @@
 require 'test/unit'
 
+# Public: test command-line arguments handling.
+#
 class TestCLIArguments < Test::Unit::TestCase
   def test_missing_arguments
     assert_match(
