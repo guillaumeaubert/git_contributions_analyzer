@@ -7,7 +7,7 @@ Parse git repos and collect commit statistics/data for a given author.
 
 The project source code is hosted at:
 
-	https://github.com/guillaumeaubert/git-commits-analyzer
+https://github.com/guillaumeaubert/git-commits-analyzer
 
 
 ## Install
