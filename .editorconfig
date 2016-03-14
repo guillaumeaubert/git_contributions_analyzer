@@ -1,4 +1,4 @@
 # Ruby files in bin/.
-[/bin/*]
+[/{bin/*,Rakefile}]
 indent_style = space
 indent_size = 2

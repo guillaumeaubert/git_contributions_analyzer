@@ -110,7 +110,7 @@ class GitCommitsAnalyzer
   # variables collecting commit metadata.
   #
   def parse_repo(repo:)
-    git_repo = Git.open(repo, :log => @logger)
+    git_repo = Git.open(repo, log: @logger)
 
     # Note: override the default of 30 for count(), nil gives the whole git log
     # history.
@@ -126,7 +126,7 @@ class GitCommitsAnalyzer
       patches.each do |patch|
         body = patch.instance_variable_get :@body
         language = self.class.determine_language(filename: patch.file, sha: commit.sha, git_repo: git_repo)
-        next if language == nil
+        next if language.nil?
         @lines_by_language[language] ||=
         {
           'added'   => 0,
@@ -184,14 +184,14 @@ class GitCommitsAnalyzer
       display_key = month_names[frame[1]] + '-' + frame[0].to_s
       data_key = sprintf('%s-%02d', frame[0], frame[1])
       count = @monthly_commits[data_key].to_s
-      formatted_monthly_commits << { :month => display_key, :commits => count.to_s }
+      formatted_monthly_commits << { month: display_key, commits: count.to_s }
     end
 
     return JSON.pretty_generate(
       {
-        :monthly_commits   => formatted_monthly_commits,
-        :total_commits     => @total_commits,
-        :lines_by_language => @lines_by_language,
+        monthly_commits:   formatted_monthly_commits,
+        total_commits:     @total_commits,
+        lines_by_language: @lines_by_language,
       }
     )
   end
