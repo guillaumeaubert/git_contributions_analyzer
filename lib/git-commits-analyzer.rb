@@ -122,8 +122,17 @@ class GitCommitsAnalyzer
       diff = git_repo.show(commit.sha)
       diff.encode!('UTF-8', 'binary', invalid: :replace, undef: :replace, replace: '')
 
+      file_properties = git_repo.ls_tree(['-r', commit.sha])
+
       patches = GitDiffParser.parse(diff)
       patches.each do |patch|
+        # Skip submodules.
+        next if file_properties['commit'].has_key?(patch.file);
+
+        # Skip symlinks.
+        next if file_properties['blob'].has_key?(patch.file) &&
+          (file_properties['blob'][patch.file]['mode'] == '120000')
+
         body = patch.instance_variable_get :@body
         language = self.class.determine_language(filename: patch.file, sha: commit.sha, git_repo: git_repo)
         next if language.nil?
