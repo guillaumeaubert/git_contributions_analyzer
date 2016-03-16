@@ -119,7 +119,7 @@ class GitCommitsAnalyzer
       next if !@author.include?(commit.author.email)
 
       # Parse diff and analyze patches to detect language.
-      diff = commit.diff_parent.to_s
+      diff = git_repo.show(commit.sha)
       diff.encode!('UTF-8', 'binary', invalid: :replace, undef: :replace, replace: '')
 
       patches = GitDiffParser.parse(diff)
