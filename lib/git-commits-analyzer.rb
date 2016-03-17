@@ -93,6 +93,10 @@ class GitCommitsAnalyzer
     case first_line
     when /perl$/
       return 'Perl'
+    when /ruby$/
+      return 'Ruby'
+    when /^\#!\/usr\/bin\/bash$/
+      return 'Ruby'
     end
 
     # Fall back on the extension in last resort.
