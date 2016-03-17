@@ -135,7 +135,7 @@ class GitCommitsAnalyzer
 
         # Skip symlinks.
         next if file_properties['blob'].has_key?(patch.file) &&
-          (file_properties['blob'][patch.file]['mode'] == '120000')
+          (file_properties['blob'][patch.file][:mode] == '120000')
 
         body = patch.instance_variable_get :@body
         language = self.class.determine_language(filename: patch.file, sha: commit.sha, git_repo: git_repo)
