@@ -23,6 +23,9 @@ class GitCommitsAnalyzer
   # Public: Returns the tally of commits broken down by hour of the day.
   attr_reader :commit_hours
 
+  # Public: Returns the tally of commits broken down by day.
+  attr_reader :commit_days
+
   # Public: Initialize new GitParser object.
   #
   # logger - A logger object to display git errors/warnings.
@@ -36,6 +39,8 @@ class GitCommitsAnalyzer
     @total_commits = 0
     @lines_by_language = {}
     @commit_hours = 0.upto(23).map{ |x| [x, 0] }.to_h
+    @commit_days = {}
+    @commit_days.default = 0
   end
 
   # Public: Determine the type of a file at the given revision of a repo.
@@ -134,8 +139,12 @@ class GitCommitsAnalyzer
       # Only include the authors specified on the command line.
       next if !@author.include?(commit.author.email)
 
-      commit_hour = DateTime.parse(commit.author.date.to_s).hour
-      commit_hours[commit_hour] += 1
+      # Parse commit date and update the corresponding stats.
+      commit_datetime = DateTime.parse(commit.author.date.to_s)
+      commit_hour = commit_datetime.hour
+      @commit_hours[commit_hour] += 1
+      commit_day = commit_datetime.strftime('%Y-%m-%d')
+      @commit_days[commit_day] += 1
 
       # Parse diff and analyze patches to detect language.
       diff = git_repo.show(commit.sha)
@@ -220,7 +229,8 @@ class GitCommitsAnalyzer
         monthly_commits:   formatted_monthly_commits,
         total_commits:     @total_commits,
         lines_by_language: @lines_by_language,
-        commits_by_hour:   @commit_hours
+        commits_by_hour:   @commit_hours,
+        commits_by_day:    @commit_days,
       }
     )
   end
