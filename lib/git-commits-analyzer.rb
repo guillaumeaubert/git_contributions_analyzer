@@ -77,7 +77,7 @@ class GitCommitsAnalyzer
       return 'bash'
     when /\.?(SKIP|gitignore|txt|csv|vim|gitmodules|gitattributes|jshintrc|gperf|vimrc|psqlrc|inputrc|screenrc)$/
       return 'Text'
-    when /^(README|MANIFEST|Changes|Gemfile|Gemfile.lock)$/
+    when /(?:\/|^)(?:README|MANIFEST|Changes|Gemfile|Gemfile.lock|CHANGELOG)$/
       return 'Text'
     end
 
