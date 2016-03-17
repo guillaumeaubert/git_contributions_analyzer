@@ -49,7 +49,9 @@ class GitCommitsAnalyzer
     case filename
     when /\.(pl|pm|t|cgi|pod|run)$/i
       return 'Perl'
-    when /\.rb$/
+    when /\.(?:rb|gemspec)$/
+      return 'Ruby'
+    when /(?:\/|^)Rakefile$/
       return 'Ruby'
     when /\.md$/
       return 'Markdown'
@@ -75,8 +77,14 @@ class GitCommitsAnalyzer
       return 'bash'
     when /(bash|bash_\w+)$/
       return 'bash'
-    when /\.?(SKIP|gitignore|txt|csv|vim|gitmodules|gitattributes|jshintrc|gperf|vimrc|psqlrc|inputrc|screenrc)$/
+    when /\.?(SKIP|gitignore|txt|csv|vim|gitmodules|gitattributes|jshintrc|gperf|vimrc|psqlrc|inputrc|screenrc|curlrc|wgetrc|selected_editor|dmrc|netrc)$/
       return 'Text'
+    when /(?:\/|^)(?:LICENSE|LICENSE-\w+)$/
+      return nil
+    when /\.(?:0|1|VimballRecord)$/
+      return nil
+    when /^vim\/doc\/tags$/
+      return nil
     when /(?:\/|^)(?:README|MANIFEST|Changes|Gemfile|Gemfile.lock|CHANGELOG)$/
       return 'Text'
     end
