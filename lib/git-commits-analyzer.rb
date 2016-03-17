@@ -20,6 +20,9 @@ class GitCommitsAnalyzer
   # Public: Returns the number of lines added/removed broken down by language.
   attr_reader :lines_by_language
 
+  # Public: Returns the tally of commits broken down by hour of the day.
+  attr_reader :commit_hours
+
   # Public: Initialize new GitParser object.
   #
   # logger - A logger object to display git errors/warnings.
@@ -32,6 +35,7 @@ class GitCommitsAnalyzer
     @monthly_commits.default = 0
     @total_commits = 0
     @lines_by_language = {}
+    @commit_hours = 0.upto(23).map{ |x| [x, 0] }.to_h
   end
 
   # Public: Determine the type of a file at the given revision of a repo.
@@ -130,6 +134,9 @@ class GitCommitsAnalyzer
       # Only include the authors specified on the command line.
       next if !@author.include?(commit.author.email)
 
+      commit_hour = DateTime.parse(commit.author.date.to_s).hour
+      commit_hours[commit_hour] += 1
+
       # Parse diff and analyze patches to detect language.
       diff = git_repo.show(commit.sha)
       diff.encode!('UTF-8', 'binary', invalid: :replace, undef: :replace, replace: '')
@@ -213,6 +220,7 @@ class GitCommitsAnalyzer
         monthly_commits:   formatted_monthly_commits,
         total_commits:     @total_commits,
         lines_by_language: @lines_by_language,
+        commits_by_hour:   @commit_hours
       }
     )
   end
