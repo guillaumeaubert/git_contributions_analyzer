@@ -243,7 +243,7 @@ class GitCommitsAnalyzer
         lines_by_language: @lines_by_language,
         commits_by_hour: @commit_hours,
         commits_by_day: @commit_days,
-        commit_by_weekdays_hours: @commit_weekdays_hours
+        commit_by_weekday_hour: @commit_weekdays_hours
       }
     )
   end
