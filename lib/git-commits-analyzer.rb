@@ -26,6 +26,9 @@ class GitCommitsAnalyzer
   # Public: Returns the tally of commits broken down by day.
   attr_reader :commit_days
 
+  # Public: Returns the tally of commits broken down by weekday and hour.
+  attr_reader :commit_weekdays_hours
+
   # Public: Initialize new GitParser object.
   #
   # logger - A logger object to display git errors/warnings.
@@ -41,6 +44,13 @@ class GitCommitsAnalyzer
     @commit_hours = 0.upto(23).map{ |x| [x, 0] }.to_h
     @commit_days = {}
     @commit_days.default = 0
+    @commit_weekdays_hours = {}
+    ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].each do |weekday|
+      @commit_weekdays_hours[weekday] = {}
+      0.upto(23).each do |hour|
+        @commit_weekdays_hours[weekday][hour] = 0
+      end
+    end
   end
 
   # Public: Determine the type of a file at the given revision of a repo.
@@ -145,6 +155,8 @@ class GitCommitsAnalyzer
       @commit_hours[commit_hour] += 1
       commit_day = commit_datetime.strftime('%Y-%m-%d')
       @commit_days[commit_day] += 1
+      commit_weekday = commit_datetime.strftime('%a')
+      @commit_weekdays_hours[commit_weekday][commit_hour] += 1
 
       # Parse diff and analyze patches to detect language.
       diff = git_repo.show(commit.sha)
@@ -226,11 +238,12 @@ class GitCommitsAnalyzer
 
     return JSON.pretty_generate(
       {
-        monthly_commits:   formatted_monthly_commits,
-        total_commits:     @total_commits,
+        monthly_commits: formatted_monthly_commits,
+        total_commits: @total_commits,
         lines_by_language: @lines_by_language,
-        commits_by_hour:   @commit_hours,
-        commits_by_day:    @commit_days,
+        commits_by_hour: @commit_hours,
+        commits_by_day: @commit_days,
+        commit_by_weekdays_hours: @commit_weekdays_hours
       }
     )
   end
