@@ -232,8 +232,8 @@ class GitCommitsAnalyzer
     self.get_month_scale.each do |frame|
       display_key = month_names[frame[1]] + '-' + frame[0].to_s
       data_key = sprintf('%s-%02d', frame[0], frame[1])
-      count = @commits_by_month[data_key].to_s
-      formatted_commits_by_month << { month: display_key, commits: count.to_s }
+      count = @commits_by_month[data_key]
+      formatted_commits_by_month << { month: display_key, commits: count.to_i }
     end
 
     return JSON.pretty_generate(
