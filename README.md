@@ -19,5 +19,5 @@ You can install this gem like this:
 
 ## Code Status
 
-* [![Build Status](https://api.travis-ci.org/guillaumeaubert/git-commits-analyzer.png)](https://travis-ci.org/guillaumeaubert/git-commits-analyzer)
+* [![Build Status](https://api.travis-ci.org/guillaumeaubert/ruby-git-commits-analyzer.png)](https://travis-ci.org/guillaumeaubert/ruby-git-commits-analyzer)
 * [![Gem Version](https://badge.fury.io/rb/git-commits-analyzer.svg)](https://badge.fury.io/rb/git-commits-analyzer)
