@@ -227,7 +227,7 @@ class GitCommitsAnalyzer
   # Returns: a JSON string.
   #
   def to_json(pretty: true)
-    formatted_commits_by_month = {}
+    formatted_commits_by_month = []
     month_names = Date::ABBR_MONTHNAMES
     self.get_month_scale.each do |frame|
       display_key = month_names[frame[1]] + '-' + frame[0].to_s
