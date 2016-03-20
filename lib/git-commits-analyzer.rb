@@ -194,6 +194,7 @@ class GitCommitsAnalyzer
 
       file_properties = git_repo.ls_tree(['-r', commit.sha])
 
+      languages_in_commit = {}
       patches = GitDiffParser.parse(diff)
       patches.each do |patch|
         # Skip submodules.
@@ -212,8 +213,10 @@ class GitCommitsAnalyzer
         @lines_by_language[language] ||=
         {
           'added'   => 0,
-          'deleted' => 0
+          'deleted' => 0,
+          'commits' => 0,
         }
+        languages_in_commit[language] = true
 
         body.split(/\n/).each do |content|
           if (/^[+-]/.match(content) && !/^[+-]\s+$/.match(content))
@@ -224,6 +227,10 @@ class GitCommitsAnalyzer
             end
           end
         end
+      end
+
+      languages_in_commit.keys.each do |language|
+        @lines_by_language[language]['commits'] += 1
       end
 
       # Add to stats for monthly commit count.
