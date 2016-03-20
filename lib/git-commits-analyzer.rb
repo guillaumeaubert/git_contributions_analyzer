@@ -11,11 +11,11 @@ require 'json'
 #
 class GitCommitsAnalyzer
   # Public: Returns a hash of commit numbers broken down by month.
-  attr_reader :monthly_commits
+  attr_reader :commits_by_month
 
   # Public: Returns the total number of commits belonging to the author
   # specified.
-  attr_reader :total_commits
+  attr_reader :commits_total
 
   # Public: Returns the number of lines added/removed broken down by language.
   attr_reader :lines_by_language
@@ -37,9 +37,9 @@ class GitCommitsAnalyzer
   def initialize(logger:, author:)
     @logger = logger
     @author = author
-    @monthly_commits = {}
-    @monthly_commits.default = 0
-    @total_commits = 0
+    @commits_by_month = {}
+    @commits_by_month.default = 0
+    @commits_total = 0
     @lines_by_language = {}
     @commit_hours = 0.upto(23).map{ |x| [x, 0] }.to_h
     @commit_days = {}
@@ -196,10 +196,10 @@ class GitCommitsAnalyzer
       # Add to stats for monthly commit count.
       # Note: months are zero-padded to allow easy sorting, even if it's more
       # work for formatting later on.
-      @monthly_commits[commit.date.strftime("%Y-%m")] += 1
+      @commits_by_month[commit.date.strftime("%Y-%m")] += 1
 
       # Add to stats for total commits count.
-      @total_commits += 1
+      @commits_total += 1
     end
   end
 
@@ -209,8 +209,8 @@ class GitCommitsAnalyzer
   #
   def get_month_scale()
     month_scale = []
-    commits_start = @monthly_commits.keys.sort.first.split('-').map { |x| x.to_i }
-    commits_end = @monthly_commits.keys.sort.last.split('-').map { |x| x.to_i }
+    commits_start = @commits_by_month.keys.sort.first.split('-').map { |x| x.to_i }
+    commits_end = @commits_by_month.keys.sort.last.split('-').map { |x| x.to_i }
     commits_start[0].upto(commits_end[0]) do |year|
       1.upto(12) do |month|
         next if month < commits_start[1] && year == commits_start[0]
@@ -227,23 +227,23 @@ class GitCommitsAnalyzer
   # Returns: a JSON string.
   #
   def to_json()
-    formatted_monthly_commits = []
+    formatted_commits_by_month = []
     month_names = Date::ABBR_MONTHNAMES
     self.get_month_scale.each do |frame|
       display_key = month_names[frame[1]] + '-' + frame[0].to_s
       data_key = sprintf('%s-%02d', frame[0], frame[1])
-      count = @monthly_commits[data_key].to_s
-      formatted_monthly_commits << { month: display_key, commits: count.to_s }
+      count = @commits_by_month[data_key].to_s
+      formatted_commits_by_month << { month: display_key, commits: count.to_s }
     end
 
     return JSON.pretty_generate(
       {
-        monthly_commits: formatted_monthly_commits,
-        total_commits: @total_commits,
-        lines_by_language: @lines_by_language,
+        commits_total: @commits_total,
+        commits_by_month: formatted_commits_by_month,
         commits_by_hour: @commit_hours,
         commits_by_day: @commit_days,
-        commit_by_weekday_hour: @commit_weekdays_hours
+        commit_by_weekday_hour: @commit_weekdays_hours,
+        lines_by_language: @lines_by_language
       }
     )
   end

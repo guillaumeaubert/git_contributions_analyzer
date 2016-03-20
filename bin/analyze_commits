@@ -43,11 +43,11 @@ puts ''
 # Display sanity check.
 printf(
   "Found %s commits for author(s) %s.\n",
-  git_commits_analyzer.total_commits,
+  git_commits_analyzer.commits_total,
   options[:authors].join(', ')
 )
 puts ''
-exit if git_commits_analyzer.monthly_commits.keys.empty?
+exit if git_commits_analyzer.commits_by_month.keys.empty?
 
 # Save data.
 puts '===== Save data ====='
