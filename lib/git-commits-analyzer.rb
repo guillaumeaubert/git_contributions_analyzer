@@ -53,6 +53,36 @@ class GitCommitsAnalyzer
     end
   end
 
+  # Public: Determine if the file is a common library that shouldn't get
+  # counted towards contributions.
+  #
+  # filename - The name of the file to analyze.
+  #
+  # Returns a boolean indicating if the file is a common library.
+  #
+  def self.is_library(filename:)
+    case filename
+    when /jquery-ui-\d+\.\d+\.\d+\.custom(?:\.min)?\.js$/
+      return true
+    when /jquery-\d+\.\d+\.\d+(?:\.min)?\.js$/
+      return true
+    when /jquery\.datepick(?:\.min)?\.js$/
+      return true
+    when /chart\.min\.js$/
+      return true
+    when /jquery\.js$/
+      return true
+    when /jquery-loader\.js$/
+      return true
+    when /qunit\.js$/
+      return true
+    when /d3\.v3(?:\.min)?\.js$/
+      return true
+    else
+      return false
+    end
+  end
+
   # Public: Determine the type of a file at the given revision of a repo.
   #
   # filename - The name of the file to analyze.
@@ -172,6 +202,9 @@ class GitCommitsAnalyzer
         # Skip symlinks.
         next if file_properties['blob'].has_key?(patch.file) &&
           (file_properties['blob'][patch.file][:mode] == '120000')
+
+        # Skip libraries.
+        next if self.class.is_library(filename: patch.file)
 
         body = patch.instance_variable_get :@body
         language = self.class.determine_language(filename: patch.file, sha: commit.sha, git_repo: git_repo)
