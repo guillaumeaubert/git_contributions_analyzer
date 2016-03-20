@@ -226,8 +226,8 @@ class GitCommitsAnalyzer
   #
   # Returns: a JSON string.
   #
-  def to_json()
-    formatted_commits_by_month = []
+  def to_json(pretty: true)
+    formatted_commits_by_month = {}
     month_names = Date::ABBR_MONTHNAMES
     self.get_month_scale.each do |frame|
       display_key = month_names[frame[1]] + '-' + frame[0].to_s
@@ -236,7 +236,7 @@ class GitCommitsAnalyzer
       formatted_commits_by_month << { month: display_key, commits: count.to_i }
     end
 
-    return JSON.pretty_generate(
+    data =
       {
         commits_total: @commits_total,
         commits_by_month: formatted_commits_by_month,
@@ -245,6 +245,11 @@ class GitCommitsAnalyzer
         commit_by_weekday_hour: @commit_weekdays_hours,
         lines_by_language: @lines_by_language
       }
-    )
+
+    if pretty
+      JSON.pretty_generate(data)
+    else
+      JSON.generate(data)
+    end
   end
 end

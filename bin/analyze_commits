@@ -52,7 +52,14 @@ exit if git_commits_analyzer.commits_by_month.keys.empty?
 # Save data.
 puts '===== Save data ====='
 puts ''
-output_file = options[:output]
-File.open(output_file, 'w') { |file| file.write(git_commits_analyzer.to_json) }
+output_directory = options[:output]
+
+output_file_pretty = File.join(output_directory, 'git_contributions.pretty.json')
+File.open(output_file_pretty, 'w') { |file| file.write(git_commits_analyzer.to_json(pretty: true)) }
+puts "Re-generated #{output_file_pretty}."
+
+output_file = File.join(output_directory, 'git_contributions.json')
+File.open(output_file, 'w') { |file| file.write(git_commits_analyzer.to_json(pretty: false)) }
 puts "Re-generated #{output_file}."
+
 puts ''
