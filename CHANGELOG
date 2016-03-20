@@ -1,3 +1,7 @@
+== 1.0.1
+
+* Fix variable type.
+
 == 1.0.0
 
 * Support determining more file languages based on file content.
