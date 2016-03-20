@@ -1,3 +1,11 @@
+== 1.0.0
+
+* Support determining more file languages based on file content.
+* Add tally of commits by weekday and hour.
+* Skip symlinks and submodule references when parsing commits.
+* Handle more parsing exceptions when determining the language of the file.
+* Standardized key names in JSON output.
+
 == 0.1.0
 
 * Initial version.
