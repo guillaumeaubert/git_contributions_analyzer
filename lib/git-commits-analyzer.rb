@@ -29,6 +29,9 @@ class GitCommitsAnalyzer
   # Public: Returns the tally of commits broken down by weekday and hour.
   attr_reader :commit_weekdays_hours
 
+  # Public: Returns the lines added/changed by month.
+  attr_reader :lines_by_month
+
   # Public: Initialize new GitParser object.
   #
   # logger - A logger object to display git errors/warnings.
@@ -51,6 +54,7 @@ class GitCommitsAnalyzer
         @commit_weekdays_hours[weekday][hour] = 0
       end
     end
+    @lines_by_month = {}
   end
 
   # Public: Determine if the file is a common library that shouldn't get
@@ -188,6 +192,10 @@ class GitCommitsAnalyzer
       commit_weekday = commit_datetime.strftime('%a')
       @commit_weekdays_hours[commit_weekday][commit_hour] += 1
 
+      # Note: months are zero-padded to allow easy sorting, even if it's more
+      # work for formatting later on.
+      commit_month = commit.date.strftime("%Y-%m")
+
       # Parse diff and analyze patches to detect language.
       diff = git_repo.show(commit.sha)
       diff.encode!('UTF-8', 'binary', invalid: :replace, undef: :replace, replace: '')
@@ -218,12 +226,20 @@ class GitCommitsAnalyzer
         }
         languages_in_commit[language] = true
 
+        @lines_by_month[commit_month] ||=
+        {
+          'added'   => 0,
+          'deleted' => 0,
+        }
+
         body.split(/\n/).each do |content|
           if (/^[+-]/.match(content) && !/^[+-]\s+$/.match(content))
             if (/^\+/.match(content))
               @lines_by_language[language]['added'] += 1
+              @lines_by_month[commit_month]['added'] += 1
             elsif (/^\-/.match(content))
               @lines_by_language[language]['deleted'] += 1
+              @lines_by_month[commit_month]['deleted'] += 1
             end
           end
         end
@@ -234,9 +250,7 @@ class GitCommitsAnalyzer
       end
 
       # Add to stats for monthly commit count.
-      # Note: months are zero-padded to allow easy sorting, even if it's more
-      # work for formatting later on.
-      @commits_by_month[commit.date.strftime("%Y-%m")] += 1
+      @commits_by_month[commit_month] += 1
 
       # Add to stats for total commits count.
       @commits_total += 1
@@ -268,12 +282,29 @@ class GitCommitsAnalyzer
   #
   def to_json(pretty: true)
     formatted_commits_by_month = []
+    formatted_lines_by_month = []
     month_names = Date::ABBR_MONTHNAMES
     self.get_month_scale.each do |frame|
       display_key = month_names[frame[1]] + '-' + frame[0].to_s
       data_key = sprintf('%s-%02d', frame[0], frame[1])
+
       count = @commits_by_month[data_key]
-      formatted_commits_by_month << { month: display_key, commits: count.to_i }
+      formatted_commits_by_month << {
+        month: display_key,
+        commits: count.to_i,
+      }
+
+      month_added_lines = 0
+      month_deleted_lines = 0
+      if @lines_by_month.key?(data_key)
+        month_added_lines = @lines_by_month[data_key]['added'].to_i
+        month_deleted_lines = @lines_by_month[data_key]['deleted'].to_i
+      end
+      formatted_lines_by_month << {
+        month: display_key,
+        added: month_added_lines,
+        deleted: month_deleted_lines,
+      }
     end
 
     data =
@@ -283,7 +314,8 @@ class GitCommitsAnalyzer
         commits_by_hour: @commit_hours,
         commits_by_day: @commit_days,
         commit_by_weekday_hour: @commit_weekdays_hours,
-        lines_by_language: @lines_by_language
+        lines_by_language: @lines_by_language,
+        lines_by_month: formatted_lines_by_month,
       }
 
     if pretty
