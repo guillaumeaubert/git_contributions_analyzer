@@ -1,6 +1,15 @@
+== 1.1.0
+
+* Ignore copies of external libraries when counting contributions.
+* Add number of commits in a given language to the output.
+* Add lines changed by month to the output.
+* Relicense under the MIT license.
+
+
 == 1.0.1
 
 * Fix variable type.
+
 
 == 1.0.0
 
@@ -9,6 +18,7 @@
 * Skip symlinks and submodule references when parsing commits.
 * Handle more parsing exceptions when determining the language of the file.
 * Standardized key names in JSON output.
+
 
 == 0.1.0
 
