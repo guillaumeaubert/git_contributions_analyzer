@@ -25,3 +25,16 @@ Code Status
 
 * [![Build Status](https://api.travis-ci.org/guillaumeaubert/ruby-git-commits-analyzer.png)](https://travis-ci.org/guillaumeaubert/ruby-git-commits-analyzer)
 * [![Gem Version](https://badge.fury.io/rb/git-commits-analyzer.svg)](https://badge.fury.io/rb/git-commits-analyzer)
+
+
+Copyright
+---------
+
+Copyright (C) 2016 Guillaume Aubert
+
+
+License
+-------
+
+This software is released under the MIT license. See the LICENSE file for
+details.

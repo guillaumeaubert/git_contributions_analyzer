@@ -7,7 +7,7 @@ Gem::Specification.new do |s|
   s.authors     = ['Guillaume Aubert']
   s.email       = 'aubertg@cpan.org'
   s.homepage    = 'http://rubygems.org/gems/'
-  s.license     = 'GPLv3'
+  s.license     = 'MIT'
 
   s.files       = [
     'lib/git-commits-analyzer.rb',
