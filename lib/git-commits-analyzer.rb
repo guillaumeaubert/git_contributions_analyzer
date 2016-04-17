@@ -3,6 +3,10 @@ require 'git'
 require 'git_diff_parser'
 require 'json'
 
+# Monkey patch for the git gem.
+# See https://github.com/schacon/ruby-git/pull/284 for more details.
+require 'git-commits-analyzer/monkey-patch-git'
+
 # Public: parse git logs for language and commit metadata.
 #
 # Examples:
