@@ -1,3 +1,9 @@
+== 1.3.0
+
+* Support for analyzing bare/mirror git clones in addition to full-fledged git
+  clones.
+
+
 == 1.2.0
 
 * Monkey-patch the git gem to support submodule commits when running git
