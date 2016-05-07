@@ -181,7 +181,11 @@ class GitCommitsAnalyzer
   # variables collecting commit metadata.
   #
   def parse_repo(repo:)
-    git_repo = Git.open(repo, log: @logger)
+    # Support both standard and bare/mirror git repositories.
+    git_repo = if File.directory?(File.join(repo, '.git'))
+      then Git.open(repo, log: @logger)
+      else Git.bare(repo, log: @logger)
+      end
 
     # Note: override the default of 30 for count(), nil gives the whole git log
     # history.

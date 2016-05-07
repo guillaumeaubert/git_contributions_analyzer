@@ -51,8 +51,10 @@ class Utils
       # Skip files.
       next if !File.directory?(dir)
 
-      # Skip directories without .git subdirectory (shortcut to identify repos).
-      next if !File.directory?(File.join(dir, '.git'))
+      # Skip directories without .git subdirectory (shortcut to identify repos
+      # with a working dir) or without a HEAD file (shortcut to identify bare
+      # git repositories).
+      next if !File.directory?(File.join(dir, '.git')) && !File.file?(File.join(dir, 'HEAD'))
 
       repos << dir
     end
