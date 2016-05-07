@@ -104,6 +104,8 @@ class GitCommitsAnalyzer
 
     # First try to match on known extensions.
     case filename
+    when /\.go$/i
+      return 'Go'
     when /\.(pl|pm|t|cgi|pod|run)$/i
       return 'Perl'
     when /\.(?:rb|gemspec)$/
