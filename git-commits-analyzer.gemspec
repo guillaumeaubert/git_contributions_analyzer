@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   s.name        = 'git-commits-analyzer'
-  s.version     = '1.3.0'
-  s.date        = '2016-05-07'
+  s.version     = '1.3.1'
+  s.date        = '2016-10-03'
   s.summary     = 'Analyze git commits'
   s.description = 'Parse git repos and collect commit statistics/data for a given author.'
   s.authors     = ['Guillaume Aubert']
