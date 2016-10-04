@@ -104,6 +104,8 @@ class GitCommitsAnalyzer
 
     # First try to match on known extensions.
     case filename
+    when /\.xml$/i
+      return 'XML'
     when /\.go$/i
       return 'Go'
     when /\.(pl|pm|t|cgi|pod|run)$/i
