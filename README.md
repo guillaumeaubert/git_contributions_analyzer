@@ -26,6 +26,7 @@ Code Status
 * [![Build Status](https://api.travis-ci.org/guillaumeaubert/ruby-git-commits-analyzer.png)](https://travis-ci.org/guillaumeaubert/ruby-git-commits-analyzer)
 * [![Gem Version](https://badge.fury.io/rb/git-commits-analyzer.svg)](https://badge.fury.io/rb/git-commits-analyzer)
 * [![Inline docs](http://inch-ci.org/github/guillaumeaubert/ruby-git-commits-analyzer.svg?branch=master&style=shields)](http://inch-ci.org/github/guillaumeaubert/ruby-git-commits-analyzer)
+* [![Gem Downloads](https://img.shields.io/gem/dt/git-commits-analyzer.svg?maxAge=2592000)](https://rubygems.org/gems/git-commits-analyzer)
 
 
 Copyright
