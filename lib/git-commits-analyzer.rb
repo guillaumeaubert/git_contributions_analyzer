@@ -107,7 +107,7 @@ class GitCommitsAnalyzer
     when /\.xml$/i
       return 'XML'
     when /\.go$/i
-      return 'Go'
+      return 'Golang'
     when /\.(pl|pm|t|cgi|pod|run)$/i
       return 'Perl'
     when /\.(?:rb|gemspec)$/
