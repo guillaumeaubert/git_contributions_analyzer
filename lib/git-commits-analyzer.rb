@@ -11,7 +11,7 @@ require 'git-commits-analyzer/monkey-patch-git'
 #
 # Example:
 #
-#   git_parser = GitCommitsAnalyzer.new(logger: logger, author: author)
+#   git_commits_analyzer = GitCommitsAnalyzer.new(logger: logger, author: author)
 #
 class GitCommitsAnalyzer
   # Public: Returns a hash of commit numbers broken down by month.
@@ -68,6 +68,10 @@ class GitCommitsAnalyzer
   #
   # @return [Bool] A boolean indicating if the file is a common library.
   #
+  # Example:
+  #
+  #   git_commits_analyzer.is_library(filename: path)
+  #
   def self.is_library(filename:)
     case filename
     when /jquery-ui-\d+\.\d+\.\d+\.custom(?:\.min)?\.js$/
@@ -98,6 +102,10 @@ class GitCommitsAnalyzer
   # @param git_repo [Object] A git repo object corresponding to the underlying repo.
   #
   # @return [String] A string corresponding to the language of the file.
+  #
+  # Example:
+  #
+  #   language = git_commits_analyzer.determine_language(filename: patch.file, sha: commit.sha, git_repo: git_repo)
   #
   def self.determine_language(filename:, sha:, git_repo:)
     return nil if filename == 'LICENSE'
@@ -181,6 +189,10 @@ class GitCommitsAnalyzer
   #
   # This method adds the metadata extracted for this repo to the instance
   # variables collecting commit metadata.
+  #
+  # Example:
+  #
+  #   git_commits_analyzer.parse_repo(repo: repo)
   #
   def parse_repo(repo:)
     # Support both standard and bare/mirror git repositories.
@@ -273,6 +285,10 @@ class GitCommitsAnalyzer
   #
   # @return [Array<String>] An array of "YYYY-MM" strings.
   #
+  # Example:
+  #
+  #   month_scale = git_commits_analyzer.get_month_scale()
+  #
   def get_month_scale()
     month_scale = []
     commits_start = @commits_by_month.keys.sort.first.split('-').map { |x| x.to_i }
@@ -290,7 +306,13 @@ class GitCommitsAnalyzer
 
   # Generate a JSON representation of the parsed data.
   #
+  # @param pretty [Bool] True to output indented JSON, false for the most compact output.
+  #
   # @return [String] A JSON string.
+  #
+  # Example:
+  #
+  #   json = git_commits_analyzer.to_json(pretty: false)
   #
   def to_json(pretty: true)
     formatted_commits_by_month = []
