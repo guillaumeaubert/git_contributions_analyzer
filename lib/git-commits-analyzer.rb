@@ -187,7 +187,9 @@ class GitCommitsAnalyzer
   #
   # @param repo [Object] A git repo object corresponding to the underlying repo.
   #
-  # This method adds the metadata extracted for this repo to the instance
+  # @return [NilClass]
+  #
+  # Note: this method adds the metadata extracted for this repo to the instance
   # variables collecting commit metadata.
   #
   # Example:
@@ -279,6 +281,8 @@ class GitCommitsAnalyzer
       # Add to stats for total commits count.
       @commits_total += 1
     end
+
+    nil
   end
 
   # Get a range of months from the earliest commit to the latest.
