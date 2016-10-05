@@ -17,7 +17,7 @@ Install
 
 You can install this gem like this:
 
-	$ sudo gem install git
+	$ sudo gem install git-commits-analyzer
 
 
 Code Status
