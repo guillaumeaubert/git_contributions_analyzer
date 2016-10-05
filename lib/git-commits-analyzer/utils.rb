@@ -1,6 +1,6 @@
 require 'optparse'
 
-# Public: supporting functions for the command-line utility.
+# Supporting functions for the command-line utility.
 #
 # Examples:
 #
@@ -9,6 +9,10 @@ require 'optparse'
 #   repos = Utils.get_git_repos(path)
 #
 class Utils
+  # Parse supported command line options.
+  #
+  # @return [Hash] A hash of options/values.
+  #
   def self.parse_command_line_options()
     options = {}
     OptionParser.new do |opts|
@@ -45,6 +49,13 @@ class Utils
     return options
   end
 
+  # Retrieve the list of git repositories amongst the subdirectories of a given
+  # directory.
+  #
+  # @param path [String] The path of the directory to inspect.
+  #
+  # @return [Array<String>] An array of directory names that have a git repository inside.
+  #
   def self.get_git_repos(path:)
     repos = []
     Dir.glob(File.join(path, '*')) do |dir|

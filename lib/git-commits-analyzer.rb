@@ -7,9 +7,9 @@ require 'json'
 # See https://github.com/schacon/ruby-git/pull/284 for more details.
 require 'git-commits-analyzer/monkey-patch-git'
 
-# Public: parse git logs for language and commit metadata.
+# Parse git logs for language and commit metadata.
 #
-# Examples:
+# Example:
 #
 #   git_parser = GitCommitsAnalyzer.new(logger: logger, author: author)
 #
@@ -36,10 +36,10 @@ class GitCommitsAnalyzer
   # Public: Returns the lines added/changed by month.
   attr_reader :lines_by_month
 
-  # Public: Initialize new GitParser object.
+  # Initialize a new GitParser object.
   #
-  # logger - A logger object to display git errors/warnings.
-  # author - The email of the git author for whom we should compile the metadata.
+  # @param logger [Object] A logger object to display git errors/warnings.
+  # @param author [String] The email of the git author for whom we should compile the metadata.
   #
   def initialize(logger:, author:)
     @logger = logger
@@ -61,12 +61,12 @@ class GitCommitsAnalyzer
     @lines_by_month = {}
   end
 
-  # Public: Determine if the file is a common library that shouldn't get
-  # counted towards contributions.
+  # Determine if the file is a common library that shouldn't get counted
+  # towards contributions.
   #
-  # filename - The name of the file to analyze.
+  # @param filename [String] The name of the file to analyze.
   #
-  # Returns a boolean indicating if the file is a common library.
+  # @return [Bool] A boolean indicating if the file is a common library.
   #
   def self.is_library(filename:)
     case filename
@@ -91,13 +91,13 @@ class GitCommitsAnalyzer
     end
   end
 
-  # Public: Determine the type of a file at the given revision of a repo.
+  # Determine the type of a file at the given revision of a repo.
   #
-  # filename - The name of the file to analyze.
-  # sha      - The commit ID.
-  # git_repo - A git repo object corresponding to the underlying repo.
+  # @param filename [String] The name of the file to analyze.
+  # @param sha      [String] The commit ID.
+  # @param git_repo [Object] A git repo object corresponding to the underlying repo.
   #
-  # Returns a string corresponding to the language of the file.
+  # @return [String] A string corresponding to the language of the file.
   #
   def self.determine_language(filename:, sha:, git_repo:)
     return nil if filename == 'LICENSE'
@@ -175,9 +175,9 @@ class GitCommitsAnalyzer
     return extension[0]
   end
 
-  # Public: Parse the git logs for a repo.
+  # Parse the git logs for a repo.
   #
-  # repo - A git repo object corresponding to the underlying repo.
+  # @param repo [Object] A git repo object corresponding to the underlying repo.
   #
   # This method adds the metadata extracted for this repo to the instance
   # variables collecting commit metadata.
@@ -269,9 +269,9 @@ class GitCommitsAnalyzer
     end
   end
 
-  # Public: Get a range of months from the earliest commit to the latest.
+  # Get a range of months from the earliest commit to the latest.
   #
-  # Returns an array of "YYYY-MM" strings.
+  # @return [Array<String>] An array of "YYYY-MM" strings.
   #
   def get_month_scale()
     month_scale = []
@@ -288,9 +288,9 @@ class GitCommitsAnalyzer
     return month_scale
   end
 
-  # Public: Generate a JSON representation of the parsed data.
+  # Generate a JSON representation of the parsed data.
   #
-  # Returns: a JSON string.
+  # @return [String] A JSON string.
   #
   def to_json(pretty: true)
     formatted_commits_by_month = []
