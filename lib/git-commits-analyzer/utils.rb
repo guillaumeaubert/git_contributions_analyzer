@@ -13,6 +13,10 @@ class Utils
   #
   # @return [Hash] A hash of options/values.
   #
+  # Example:
+  #
+  #   options = Utils.parse_command_line_options()
+  #
   def self.parse_command_line_options()
     options = {}
     OptionParser.new do |opts|
@@ -55,6 +59,10 @@ class Utils
   # @param path [String] The path of the directory to inspect.
   #
   # @return [Array<String>] An array of directory names that have a git repository inside.
+  #
+  # Example:
+  #
+  #   repos = Utils.get_git_repos(path)
   #
   def self.get_git_repos(path:)
     repos = []
