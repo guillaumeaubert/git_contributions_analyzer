@@ -36,6 +36,9 @@ class GitCommitsAnalyzer
   # Public: Returns the lines added/changed by month.
   attr_reader :lines_by_month
 
+  # Public: Returns information about the analysis process.
+  attr_reader :analysis_metadata
+
   # Initialize a new GitParser object.
   #
   # @param logger [Object] A logger object to display git errors/warnings.
@@ -59,6 +62,10 @@ class GitCommitsAnalyzer
       end
     end
     @lines_by_month = {}
+    @analysis_metadata = {}
+    @analysis_metadata['started_at'] = Time.now.to_i
+    @analysis_metadata['repositories_analyzed'] = 0
+    @analysis_metadata['ms_spent'] = 0
   end
 
   # Determine if the file is a common library that shouldn't get counted
@@ -197,6 +204,8 @@ class GitCommitsAnalyzer
   #   git_commits_analyzer.parse_repo(repo: repo)
   #
   def parse_repo(repo:)
+    parse_start = Time.now
+
     # Support both standard and bare/mirror git repositories.
     git_repo = if File.directory?(File.join(repo, '.git'))
       then Git.open(repo, log: @logger)
@@ -282,6 +291,9 @@ class GitCommitsAnalyzer
       @commits_total += 1
     end
 
+    @analysis_metadata['repositories_analyzed'] += 1
+    @analysis_metadata['ms_spent'] += ((Time.now - parse_start)*1000.0).to_i
+
     nil
   end
 
@@ -354,6 +366,7 @@ class GitCommitsAnalyzer
         commit_by_weekday_hour: @commit_weekdays_hours,
         lines_by_language: @lines_by_language,
         lines_by_month: formatted_lines_by_month,
+        analysis_metadata: @analysis_metadata,
       }
 
     if pretty
