@@ -167,6 +167,8 @@ class GitCommitsAnalyzer
       return nil
     when /(?:\/|^)(?:README|MANIFEST|Changes|Gemfile|Gemfile.lock|CHANGELOG)$/
       return 'Text'
+    when /Dockerfile$/
+      return 'Docker'
     end
 
     # Next, retrieve the file content and infer from that.
