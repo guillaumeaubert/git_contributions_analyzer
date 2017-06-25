@@ -159,6 +159,8 @@ class GitCommitsAnalyzer
       return 'Text'
     when /(?:\/|^)(?:LICENSE|LICENSE-\w+)$/
       return nil
+    when /crontab$/
+      return nil
     when /\.(?:0|1|VimballRecord)$/
       return nil
     when /^vim\/doc\/tags$/
