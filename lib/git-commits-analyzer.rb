@@ -97,6 +97,8 @@ class GitCommitsAnalyzer
       return true
     when /d3\.v3(?:\.min)?\.js$/
       return true
+    when /automysqlbackup(?:_default\.conf)?$/
+      return true
     else
       return false
     end
