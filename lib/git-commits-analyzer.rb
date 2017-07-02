@@ -87,7 +87,7 @@ class GitCommitsAnalyzer
       return true
     when /jquery\.datepick(?:\.min)?\.js$/
       return true
-    when /chart\.min\.js$/
+    when /js\/lib\/$/
       return true
     when /jquery\.js$/
       return true
