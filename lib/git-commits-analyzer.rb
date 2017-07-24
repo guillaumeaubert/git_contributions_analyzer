@@ -1,5 +1,6 @@
 require 'date'
 require 'git'
+require 'git-commits-analyzer/git-stats-ignore'
 require 'git_diff_parser'
 require 'json'
 
@@ -68,40 +69,33 @@ class GitCommitsAnalyzer
     @analysis_metadata['ms_spent'] = 0
   end
 
-  # Determine if the file is a common library that shouldn't get counted
-  # towards contributions.
+  # Retrieve the .gitstatsignore file if it exists in the repository.
   #
-  # @param filename [String] The name of the file to analyze.
+  # @param git_repo [Object] The name of the file to analyze.
   #
-  # @return [Bool] A boolean indicating if the file is a common library.
+  # @return [Object] A gitstatsignore object corresponding to the underlying file.
   #
   # Example:
   #
-  #   git_commits_analyzer.is_library(filename: path)
+  #   git_commits_analyzer.get_gitstatsignore(git_repo: git_repo)
   #
-  def self.is_library(filename:)
-    case filename
-    when /jquery-ui-\d+\.\d+\.\d+\.custom(?:\.min)?\.js$/
-      return true
-    when /jquery-\d+\.\d+\.\d+(?:\.min)?\.js$/
-      return true
-    when /jquery\.datepick(?:\.min)?\.js$/
-      return true
-    when /js\/lib\/$/
-      return true
-    when /jquery\.js$/
-      return true
-    when /jquery-loader\.js$/
-      return true
-    when /qunit\.js$/
-      return true
-    when /d3\.v3(?:\.min)?\.js$/
-      return true
-    when /automysqlbackup(?:_default\.conf)?$/
-      return true
-    else
-      return false
+  def self.get_gitstatsignore(git_repo:)
+    content = nil
+    begin
+      content = git_repo.show('HEAD', '.gitstatsignore')
+    rescue
+      puts "No .gitstatsignore found in this repo."
+      content = ''
     end
+
+    gitstatsignore = nil
+    begin
+      gitstatsignore = GitStatsIgnore.new(content: content)
+    rescue
+      pp "#{$!}"
+    end
+
+    return gitstatsignore
   end
 
   # Determine the type of a file at the given revision of a repo.
@@ -218,8 +212,12 @@ class GitCommitsAnalyzer
       else Git.bare(repo, log: @logger)
       end
 
+    # Retrieve the latest gitstatsignore file if it exists.
+    gitstatsignore = self.class.get_gitstatsignore(git_repo: git_repo)
+
     # Note: override the default of 30 for count(), nil gives the whole git log
     # history.
+    files_inspected = {}
     git_repo.log(count = nil).each do |commit|
       # Only include the authors specified on the command line.
       next if !@author.include?(commit.author.email)
@@ -253,8 +251,9 @@ class GitCommitsAnalyzer
         next if file_properties['blob'].has_key?(patch.file) &&
           (file_properties['blob'][patch.file][:mode] == '120000')
 
-        # Skip libraries.
-        next if self.class.is_library(filename: patch.file)
+        # Skip files in gitstatsignore.
+        next if gitstatsignore.matches_filename(filename: patch.file)
+        files_inspected[patch.file] = true
 
         body = patch.instance_variable_get :@body
         language = self.class.determine_language(filename: patch.file, sha: commit.sha, git_repo: git_repo)
@@ -295,6 +294,11 @@ class GitCommitsAnalyzer
 
       # Add to stats for total commits count.
       @commits_total += 1
+    end
+
+    puts "Files inspected:"
+    files_inspected.keys.sort.each do |file|
+      puts " - #{file}"
     end
 
     @analysis_metadata['repositories_analyzed'] += 1
