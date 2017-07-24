@@ -149,7 +149,7 @@ class GitCommitsAnalyzer
       return 'bash'
     when /(bash|bash_\w+)$/
       return 'bash'
-    when /\.?(SKIP|gitignore|txt|csv|vim|gitmodules|gitattributes|jshintrc|gperf|vimrc|psqlrc|inputrc|screenrc|curlrc|wgetrc|selected_editor|dmrc|netrc)$/
+    when /\.?(SKIP|gitstatsignore|gitignore|txt|csv|vim|gitmodules|gitattributes|jshintrc|gperf|vimrc|psqlrc|inputrc|screenrc|curlrc|wgetrc|selected_editor|dmrc|netrc)$/
       return 'Text'
     when /(?:\/|^)(?:LICENSE|LICENSE-\w+)$/
       return nil
