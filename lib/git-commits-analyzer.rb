@@ -173,7 +173,7 @@ class GitCommitsAnalyzer
     end
     return nil if content == nil || content == ''
 
-    first_line = content.split(/\n/)[0] || ''
+    first_line = content.encode('UTF-8', invalid: :replace, undef: :replace).split(/\n/)[0] || ''
     case first_line
     when /perl$/
       return 'Perl'
